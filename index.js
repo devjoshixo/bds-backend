@@ -7,6 +7,7 @@ app.get("/", (req, res) => {
   res.send("Dashboard");
 });
 
+
 app.get("/contacts", (req,res) => {
   res.send("Contacts")
 })
@@ -19,6 +20,8 @@ app.get("/schedule/setup" , (req,res) => {
   res.send("Setup schedules")
 })
 
+
 app.listen(port, () => {
   console.log(`Listening on port ${port}`);
 });
+// developed by Chirag
