@@ -1,0 +1,23 @@
+{
+  "name": "bds-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CHIRAG-GUPTA-987/bds-backend.git"
+  },
+  "author": "Chirag Gupta / Dev Joshi",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/CHIRAG-GUPTA-987/bds-backend/issues"
+  },
+  "homepage": "https://github.com/CHIRAG-GUPTA-987/bds-backend#readme",
+  "dependencies": {
+    "express": "^4.18.2",
+    "mongoose": "^6.8.2"
+  }
+}
