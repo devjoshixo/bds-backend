@@ -9,12 +9,11 @@ module.exports.display = async (req, res) => {
 //To add a Contact
 module.exports.addContact = async (req, res) => {
   try {
-    const { name, mobile, email, membership } = req.body;
+    const { name, mobile, email } = req.body;
     const newContact = new Contacts({
       name,
       mobile,
       email,
-      membership,
     });
     await newContact.save();
     res.send(newContact);

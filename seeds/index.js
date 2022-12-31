@@ -18,7 +18,6 @@ const rootContacts = async () => {
   await Contacts.deleteMany({});
   for (let contactSeed of contactSeeds) {
     let newContact = new Contacts({
-      serialNumber: contactSeed.Sno,
       name: contactSeed.Name,
       mobile: contactSeed.MobileNo,
       email: contactSeed.email,

@@ -16,11 +16,6 @@ const contactSchema = new Schema({
     required: true,
     unique: true,
   },
-  membership: {
-    type: String,
-    enum: ["Basic", "Silver", "Gold", "Platinum", "Diamond"],
-    default: "Basic",
-  },
 });
 contactSchema.plugin(mongooseUniqueValidation);
 
