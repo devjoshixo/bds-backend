@@ -17,3 +17,19 @@ module.exports.addContact = async (req, res) => {
   await newContact.save();
   res.send(newContact);
 };
+module.exports.editContact = async (req, res) => {
+  const { id } = req.params;
+  const { name, mobile } = req.body;
+  const contactEdit = await Contacts.findByIdAndUpdate(id, {
+    name,
+    mobile,
+  });
+  let savingContact = await contactEdit.save();
+  res.send(contactEdit);
+};
+module.exports.deleteContact = async (req, res) => {
+  const { id } = req.params;
+  const delContact = await Contacts.findByIdAndDelete(id);
+  console.log(delContact);
+  res.send(delContact);
+};
