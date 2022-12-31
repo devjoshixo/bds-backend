@@ -17,6 +17,8 @@ module.exports.addContact = async (req, res) => {
   await newContact.save();
   res.send(newContact);
 };
+
+//To edit Contact
 module.exports.editContact = async (req, res) => {
   const { id } = req.params;
   const { name, mobile } = req.body;
@@ -27,9 +29,10 @@ module.exports.editContact = async (req, res) => {
   let savingContact = await contactEdit.save();
   res.send(contactEdit);
 };
+
+//To delete Contact
 module.exports.deleteContact = async (req, res) => {
-  const { id } = req.params;
+  const { id } = await req.params;
   const delContact = await Contacts.findByIdAndDelete(id);
-  console.log(delContact);
-  res.send(delContact);
+  res.send("Contact deleted successfully");
 };

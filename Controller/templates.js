@@ -1,5 +1,3 @@
-const tempelates = require("../Models/")
-
 module.exports.display = (req, res) => {
   res.send("Displaying templates");
 };
