@@ -1,4 +1,89 @@
 const User = require("../Models/user");
-module.exports.createUser = async (req, res) => {};
-module.exports.login = async (req, res) => {};
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const jsonSecret = "...";
+module.exports.createUser = async (req, res) => {
+  try {
+    let success = false;
+    //Refactoring body arguements
+    const { username, email, password } = req.body;
+    let user = await User.findOne({ email: email });
+
+    //Checking if the user with given email already exists or not
+    if (user)
+      return res.status(400).json({
+        success,
+        error: "A user is already registered with that email address",
+      });
+
+    //Hashing password to protect it from attackers
+    const salt = await bcrypt.genSalt(12);
+    const securedPassword = await bcrypt.hash(password, salt);
+
+    //Creating user
+    user = await User.create({
+      username: username,
+      password: securedPassword,
+      email: email,
+    });
+
+    //Creating auth token and sending response to the user
+    const data = {
+      user: {
+        id: user.id,
+      },
+    };
+
+    const jwtToken = jwt.sign(data, jsonSecret);
+    success = true;
+    res.json({ success, authToken: jwtToken });
+  } catch (error) {
+    console.log(error);
+    res.status(400).send(error);
+  }
+};
+module.exports.login = async (req, res) => {
+  try {
+    //Success will be true if login is successful.
+    let success = false;
+
+    //Refactoring body arguements
+    const { email, password } = req.body;
+    let user = await User.findOne({ email: email });
+    //Checking if the user with given email already exists or not
+    if (!user)
+      return res.status(400).send("Username or password may be incorrect");
+
+    //Comparing passwords
+    const passwordCompare = await bcrypt.compare(password, user.password);
+
+    //Checking if the password is wrong
+    if (!passwordCompare)
+      return res
+        .status(400)
+        .send(success, "Username or password may be incorrect");
+
+    //Logging in User and sending back response.
+    const data = {
+      user: {
+        id: user.id,
+      },
+    };
+    const jwtToken = jwt.sign(data, jsonSecret);
+    success = true;
+    res.json({ success, authToken: jwtToken });
+  } catch (error) {
+    console.log(error);
+    res.status(400).send(error);
+  }
+};
 module.exports.logoutUser = async (req, res) => {};
+module.exports.getUserDetails = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const user = await User.findById(userId).select("-password");
+    res.json(user);
+  } catch (error) {
+    res.status(400).send(error);
+  }
+};

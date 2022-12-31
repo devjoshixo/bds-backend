@@ -22,10 +22,12 @@ mongoose
 const schedules = require("./Routes/schedules");
 const templates = require("./Routes/templates");
 const contacts = require("./Routes/contacts");
+const user = require("./Routes/user");
 
 app.use("/schedules", schedules);
 app.use("/templates", templates);
 app.use("/contacts", contacts);
+app.use("/user", user);
 
 app.listen(port, () => {
   console.log(`Listening on port ${port}`);
