@@ -21,6 +21,7 @@ const rootContacts = async () => {
       serialNumber: contactSeed.Sno,
       name: contactSeed.Name,
       mobile: contactSeed.MobileNo,
+      email: contactSeed.email,
     });
     await newContact.save();
   }

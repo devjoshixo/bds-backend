@@ -8,14 +8,20 @@ module.exports.display = async (req, res) => {
 
 //To add a Contact
 module.exports.addContact = async (req, res) => {
-  const { serialNumber, name, mobile } = req.body;
-  const newContact = new Contacts({
-    serialNumber,
-    name,
-    mobile,
-  });
-  await newContact.save();
-  res.send(newContact);
+  try {
+    const { name, mobile, email, membership } = req.body;
+    const newContact = new Contacts({
+      name,
+      mobile,
+      email,
+      membership,
+    });
+    await newContact.save();
+    res.send(newContact);
+  } catch (e) {
+    console.log(e);
+    res.status(400).send("Email is already registered with the system");
+  }
 };
 
 //To edit Contact
@@ -26,14 +32,14 @@ module.exports.editContact = async (req, res) => {
     name,
     mobile,
   });
-  let savingContact = await contactEdit.save();
+  await contactEdit.save();
   res.send(contactEdit);
 };
 
 //To delete Contact
 module.exports.deleteContact = async (req, res) => {
   const { id } = await req.params;
-  const delContact = await Contacts.findByIdAndDelete(id);
+  await Contacts.findByIdAndDelete(id);
   res.send("Contact deleted successfully");
 };
 
