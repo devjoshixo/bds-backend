@@ -36,3 +36,8 @@ module.exports.deleteContact = async (req, res) => {
   const delContact = await Contacts.findByIdAndDelete(id);
   res.send("Contact deleted successfully");
 };
+
+module.exports.deleteAllContacts = async (req, res) => {
+  await Contacts.deleteMany({});
+  res.send("All contacts deleted");
+};
