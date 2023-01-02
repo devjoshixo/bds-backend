@@ -27,12 +27,8 @@ module.exports.addContact = async (req, res) => {
 module.exports.editContact = async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, mobile, whatsappMobile } = req.body;
-    const contact = await Contacts.findById(id);
     const contactEdit = await Contacts.findByIdAndUpdate(id, {
-      name,
-      mobile,
-      whatsappMobile,
+      ...req.body,
     });
     await contactEdit.save();
     res.status(204).json(contactEdit);
