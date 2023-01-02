@@ -11,6 +11,9 @@ const contactSchema = new Schema({
     type: Number,
     required: true,
   },
+  whatsappMobile: {
+    type: Number,
+  },
   email: {
     type: String,
     required: true,
