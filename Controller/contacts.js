@@ -3,7 +3,7 @@ const Contacts = require("../Models/contacts");
 //To display contacts
 module.exports.display = async (req, res) => {
   const contacts = await Contacts.find({});
-  res.send(contacts);
+  res.status(200).json(contacts);
 };
 
 //To add a Contact
@@ -16,33 +16,53 @@ module.exports.addContact = async (req, res) => {
       email,
     });
     await newContact.save();
-    res.send(newContact);
+    res.status(200).json(newContact);
   } catch (e) {
     console.log(e);
-    res.status(400).send("Email is already registered with the system");
+    res
+      .status(409)
+      .json({ errorMessage: "Email is already registered with the system" });
   }
 };
 
 //To edit Contact
 module.exports.editContact = async (req, res) => {
-  const { id } = req.params;
-  const { name, mobile } = req.body;
-  const contactEdit = await Contacts.findByIdAndUpdate(id, {
-    name,
-    mobile,
-  });
-  await contactEdit.save();
-  res.send(contactEdit);
+  try {
+    const { id } = req.params;
+    const { name, mobile } = req.body;
+    const contactEdit = await Contacts.findByIdAndUpdate(id, {
+      name,
+      mobile,
+    });
+    await contactEdit.save();
+    res.status(204).json(contactEdit);
+  } catch (e) {
+    res
+      .status(404)
+      .json({ errorMessage: "Error occured while editing contact" });
+  }
 };
 
 //To delete Contact
 module.exports.deleteContact = async (req, res) => {
-  const { id } = await req.params;
-  await Contacts.findByIdAndDelete(id);
-  res.send("Contact deleted successfully");
+  try {
+    const { id } = await req.params;
+    const deleteContact = await Contacts.findByIdAndDelete(id);
+    res.status(204).json(deleteContact);
+  } catch (e) {
+    res
+      .status(404)
+      .json({ errorMessage: "Error occured while deleting contact" });
+  }
 };
 
 module.exports.deleteAllContacts = async (req, res) => {
-  await Contacts.deleteMany({});
-  res.send("All contacts deleted");
+  try {
+    await Contacts.deleteMany({});
+    res.status(204).json({ successMessage: "All contacts deleted" });
+  } catch (e) {
+    res
+      .status(404)
+      .json({ errorMessage: "Error occured while deleting contacts" });
+  }
 };
