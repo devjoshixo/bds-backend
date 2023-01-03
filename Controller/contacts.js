@@ -74,10 +74,10 @@ module.exports.addCustomField = async (req, res) => {
       type,
     });
     await newCustomField.save();
-    if (type == "Text" || type == "Select") type = "String";
-    if (type == "MultiSelect") type = "Array";
+    if (type == "Text" || type == "Select") var customtype = "String";
+    if (type == "MultiSelect") var customtype = "Array";
     await mongooseDynamic.addSchemaField(Contacts, title, {
-      type: type,
+      type: customtype,
       default: null,
     });
     res.status(200).json(newCustomField);
