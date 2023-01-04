@@ -1,5 +1,7 @@
 const mongoose = require("mongoose");
 const Contacts = require("../Models/contacts");
+const Templates = require("../Models/templates");
+const templateSeeds = require("./templateSeed");
 const contactSeeds = require("./contactSeed");
 require("dotenv").config();
 
@@ -20,12 +22,26 @@ const rootContacts = async () => {
     let newContact = new Contacts({
       name: contactSeed.Name,
       mobile: contactSeed.MobileNo,
-      email: contactSeed.email,
+      whatsappMobile: contactSeed.MobileNo,
+      email: contactSeed.Sno + "testdata@gmail.com",
+      templateNo: "",
+      SentReport: "",
     });
     await newContact.save();
   }
 };
 
-rootContacts().then(() => {
+const rootTemplates = async () => {
+  for (let template of templateSeeds) {
+    let newTemplate = new Templates(template);
+    await newTemplate.save();
+  }
+};
+
+// rootContacts().then(() => {
+//   mongoose.connection.close();
+// });
+
+rootTemplates().then(() => {
   mongoose.connection.close();
 });

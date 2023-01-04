@@ -17,7 +17,12 @@ const contactSchema = new Schema({
   email: {
     type: String,
     required: true,
-    unique: true,
+  },
+  templateNo: {
+    type: String,
+  },
+  SentReport: {
+    type: String,
   },
 });
 contactSchema.plugin(mongooseUniqueValidation);

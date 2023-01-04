@@ -1,7 +1,6 @@
-module.exports.display = (req, res) => {
-  res.send("Displaying templates");
-};
+const Templates = require("../Models/templates");
 
-module.exports.add = (req, res) => {
-  res.send("Adding new template");
+module.exports.display = async (req, res) => {
+  const templates = await Templates.find({});
+  res.status(200).json(templates);
 };
