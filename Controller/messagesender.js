@@ -1,4 +1,4 @@
-const fetches = require("node-fetch");
+const request = require("request");
 const Contacts = require("../Controller/contacts");
 const Templates = require("../Controller/templates");
 const http = require("http");
@@ -12,55 +12,37 @@ module.exports.sendMessage = async (req, res) => {
       contacts[i]["templateNo"]
     );
     let msg = await evalBody(selectedTemplate["templatesBody"], contacts[i]);
-    let status = await sendWhatsapp1(
+    const status = await sendWhatsapp1(
       `${contacts[i]["mobile"]}`,
       msg,
       selectedTemplate["Attachment"]
     );
-    res.send("status");
+    res.send(status);
   }
 };
 
-module.exports.sendWhatsapp1 = async (req, res) => {
-  const messageBody = {
-    username: "Gauravdembla26",
-    password: "Shree1983",
-    receiverMobileNo: "9871324442",
-    message: ["Hello"],
-  };
-
-  // fetch("https://app.messageautosender.com/api/v1/message/create", {
-  //   method: "POST",
-  //   body: messageBody,
-  // })
-  //   .then((response) => {
-  //     response.json();
-  //     console.log(response);
-  //   })
-  //   .then((json) => console.log(json));
-  const msg = JSON.stringify(messageBody);
-  console.log(msg);
-  var URL = "https://app.messageautosender.com/api/v1/message/create";
-  // var URL = "https://api.adviceslip.com/advice";
-  const options = {
+const sendWhatsapp1 = async (phone, msg, Attachment) => {
+  var arr = [];
+  var options = {
     method: "POST",
-    contentType: "application/json",
-    payload: msg,
+    url: "https://app.messageautosender.com/api/v1/message/create/",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      username: "Gauravdembla26",
+      password: "Shree1983",
+      receiverMobileNo: phone,
+      message: [msg],
+    }),
   };
-  const opt = JSON.stringify(options);
-  try {
-    console.log(options);
-    var sendStatus = await fetches(URL, options);
-    // console.log(sendStatus);
-    res.send(sendStatus);
-  } catch (e) {
-    var sendStatus = e;
-    res.send(sendStatus);
-  }
-  // console.log(status);
-  // const stat = await fetch(URL);
-  // console.log(status);
-  res.send(sendStatus);
+  const status = await request(options, async (error, response) => {
+    if (error) {
+      throw new Error(error);
+    }
+    return await response.body;
+  });
+  return status;
 };
 
 const evalBody = (body, vars) => {
