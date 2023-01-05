@@ -21,6 +21,9 @@ const contactSchema = new Schema({
   templateNo: {
     type: String,
   },
+  SentStatus: {
+    type: String,
+  },
   SentReport: {
     type: String,
   },

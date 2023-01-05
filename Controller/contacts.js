@@ -9,6 +9,14 @@ module.exports.display = async (req, res) => {
   res.status(200).json(contacts);
 };
 
+//To get messages to sendMessages
+module.exports.getSelectedContacts = async () => {
+  const contacts = await Contacts.find({
+    templateNo: { $ne: "" },
+  });
+  return contacts;
+};
+
 //To add a Contact
 module.exports.addContact = async (req, res) => {
   try {

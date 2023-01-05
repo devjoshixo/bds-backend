@@ -24,11 +24,13 @@ const schedules = require("./Routes/schedules");
 const templates = require("./Routes/templates");
 const contacts = require("./Routes/contacts");
 const user = require("./Routes/user");
+const sendMessage = require("./Routes/messagesender");
 
 app.use("/schedules", schedules);
 app.use("/templates", templates);
 app.use("/contacts", contacts);
 app.use("/user", user);
+app.use("/sendmessages", sendMessage);
 
 app.listen(port, () => {
   console.log(`Listening on port ${port}`);

@@ -25,10 +25,22 @@ const rootContacts = async () => {
       whatsappMobile: contactSeed.MobileNo,
       email: contactSeed.Sno + "testdata@gmail.com",
       templateNo: "",
-      SentReport: "",
+      SentStatus: "S",
+      SentReport: "Sent on 05:01:2023 11:52",
     });
+
     await newContact.save();
   }
+  let newContact = new Contacts({
+    name: "Dev",
+    mobile: 9910513597,
+    whatsappMobile: 9910513597,
+    email: "3476testdata@gmail.com",
+    templateNo: "2",
+    SentStatus: "",
+    SentReport: "",
+  });
+  await newContact.save();
 };
 
 const rootTemplates = async () => {
@@ -38,10 +50,10 @@ const rootTemplates = async () => {
   }
 };
 
-// rootContacts().then(() => {
-//   mongoose.connection.close();
-// });
-
-rootTemplates().then(() => {
+rootContacts().then(() => {
   mongoose.connection.close();
 });
+
+// rootTemplates().then(() => {
+//   mongoose.connection.close();
+// });
