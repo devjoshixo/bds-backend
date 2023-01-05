@@ -1,6 +1,8 @@
-const { removeSchemaField } = require("mongoose-dynamic-schemas");
+const fetches = require("node-fetch");
 const Contacts = require("../Controller/contacts");
 const Templates = require("../Controller/templates");
+const http = require("http");
+const { response } = require("express");
 
 module.exports.sendMessage = async (req, res) => {
   const contacts = await Contacts.getSelectedContacts();
@@ -20,27 +22,45 @@ module.exports.sendMessage = async (req, res) => {
 };
 
 module.exports.sendWhatsapp1 = async (req, res) => {
-  var driveFiles = [];
-  var messageBody = {
-    //  username: "Gauravdembla26",
-    //  password: "Shree1983",
+  const messageBody = {
+    username: "Gauravdembla26",
+    password: "Shree1983",
     receiverMobileNo: "9871324442",
-    message: "Hello",
+    message: ["Hello"],
   };
-  var URL =
-    "https://app.messageautosender.com/api/v1/message/create?username=Gauravdembla26&password=Shree1983";
-  var options = {
-    method: "post",
-    contentType: "application/json",
-    payload: messageBody,
-  };
-  // console.log(options);
-  const status = await fetch(URL, options);
-  // const parsedStatus = await status.json();
-  console.log(status);
 
-  res.send(status);
-  removeSchemaField;
+  // fetch("https://app.messageautosender.com/api/v1/message/create", {
+  //   method: "POST",
+  //   body: messageBody,
+  // })
+  //   .then((response) => {
+  //     response.json();
+  //     console.log(response);
+  //   })
+  //   .then((json) => console.log(json));
+  const msg = JSON.stringify(messageBody);
+  console.log(msg);
+  var URL = "https://app.messageautosender.com/api/v1/message/create";
+  // var URL = "https://api.adviceslip.com/advice";
+  const options = {
+    method: "POST",
+    contentType: "application/json",
+    payload: msg,
+  };
+  const opt = JSON.stringify(options);
+  try {
+    console.log(options);
+    var sendStatus = await fetches(URL, options);
+    // console.log(sendStatus);
+    res.send(sendStatus);
+  } catch (e) {
+    var sendStatus = e;
+    res.send(sendStatus);
+  }
+  // console.log(status);
+  // const stat = await fetch(URL);
+  // console.log(status);
+  res.send(sendStatus);
 };
 
 const evalBody = (body, vars) => {
