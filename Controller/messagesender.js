@@ -1,3 +1,4 @@
+const { removeSchemaField } = require("mongoose-dynamic-schemas");
 const Contacts = require("../Controller/contacts");
 const Templates = require("../Controller/templates");
 
@@ -18,27 +19,28 @@ module.exports.sendMessage = async (req, res) => {
   }
 };
 
-const sendWhatsapp1 = async (mobileno, msg, nonDriveFiles) => {
+module.exports.sendWhatsapp1 = async (req, res) => {
   var driveFiles = [];
   var messageBody = {
-    username: "Gauravdembla26",
-    password: "Shree1983",
-    receiverMobileNo: mobileno,
-    recipientIds: [""],
-    message: [msg],
-    filePathUrl: nonDriveFiles,
+    //  username: "Gauravdembla26",
+    //  password: "Shree1983",
+    receiverMobileNo: "9871324442",
+    message: "Hello",
   };
-  var URL = "https://app.autowapsender.com/api/v1/message/create";
+  var URL =
+    "https://app.messageautosender.com/api/v1/message/create?username=Gauravdembla26&password=Shree1983";
   var options = {
     method: "post",
     contentType: "application/json",
     payload: messageBody,
   };
+  // console.log(options);
   const status = await fetch(URL, options);
   // const parsedStatus = await status.json();
-  // console.log(parsedStatus);
   console.log(status);
-  return status;
+
+  res.send(status);
+  removeSchemaField;
 };
 
 const evalBody = (body, vars) => {
