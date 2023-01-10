@@ -5,30 +5,30 @@ const scheduleSchema = new Schema({
   date: {
     type: Date,
   },
-  messageType: {
-    type: String,
-  },
-  batchNumber: {
-    type: String,
-  },
-  templateNumber: {
+  // messageType: {
+  //   type: String,
+  // },
+  // batchNumber: {
+  //   type: String,
+  // },
+  templateNo: {
     type: Number,
   },
   active: {
     type: Boolean,
   },
-  sendNow: {
-    type: Boolean,
-  },
+  // sendNow: {
+  //   type: Boolean,
+  // },
   entry: {
     type: Date,
   },
   scheduledBy: {
     type: String,
   },
-  numberInBatch: {
-    type: Number,
-  },
+  // numberInBatch: {
+  //   type: Number,
+  // },
 });
 
 const Schedules = mongoose.model("Schedules", scheduleSchema);

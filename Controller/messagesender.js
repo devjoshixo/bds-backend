@@ -1,28 +1,48 @@
 const request = require("request");
 const Contacts = require("../Controller/contacts");
+const Contact = require("../Models/contacts");
 const Templates = require("../Controller/templates");
 const http = require("http");
 const { response } = require("express");
 
+module.exports.sendScheduledMessages = async (templateNo) => {
+  const contacts = await Contacts.getSelectedContacts(`${templateNo}`);
+  const selectedTemplate = await Templates.getSelectedTemplate(templateNo);
+
+  for (let i = 0; i < contacts.length; i++) {
+    let msg = await evalBody(selectedTemplate["templatesBody"], contacts[i]);
+    await sendWhatsapp1(
+      contacts[i]["mobile"],
+      msg,
+      selectedTemplate["Attachment"],
+      contacts[i]["_id"]
+    );
+  }
+  return false;
+};
+
 module.exports.sendMessage = async (req, res) => {
-  const contacts = await Contacts.getSelectedContacts();
+  let startTime = new Date();
+  const contacts = await Contacts.getAllContacts();
 
   for (let i = 0; i < contacts.length; i++) {
     const selectedTemplate = await Templates.getSelectedTemplate(
       contacts[i]["templateNo"]
     );
     let msg = await evalBody(selectedTemplate["templatesBody"], contacts[i]);
-    const status = await sendWhatsapp1(
+    await sendWhatsapp1(
       `${contacts[i]["mobile"]}`,
       msg,
-      selectedTemplate["Attachment"]
+      selectedTemplate["Attachment"],
+      contacts[i]["_id"]
     );
-    res.send(status);
   }
+  let endTime = new Date();
+  let elapsed = endTime - startTime;
+  res.send(`${elapsed / 1000}`);
 };
 
-const sendWhatsapp1 = async (phone, msg, Attachment) => {
-  var arr = [];
+const sendWhatsapp1 = async (phone, msg, Attachment, id) => {
   var options = {
     method: "POST",
     url: "https://app.messageautosender.com/api/v1/message/create/",
@@ -36,13 +56,26 @@ const sendWhatsapp1 = async (phone, msg, Attachment) => {
       message: [msg],
     }),
   };
-  const status = await request(options, async (error, response) => {
+  await request(options, async (error, response) => {
     if (error) {
       throw new Error(error);
     }
-    return await response.body;
+    await statusSaver(JSON.parse(response.body), id);
   });
-  return status;
+  return;
+};
+
+//To save status
+const statusSaver = async (status, id) => {
+  var userID = id.toString();
+  var SentStatus = status.message;
+  var SentReport = "Sent on " + new Date();
+  await Contact.findOne({
+    _id: userID,
+  })
+    .updateOne({ SentStatus: SentStatus, SentReport: SentReport })
+    .then((doc) => doc)
+    .catch((e) => console.log(e));
 };
 
 const evalBody = (body, vars) => {

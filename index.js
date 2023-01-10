@@ -25,12 +25,17 @@ const templates = require("./Routes/templates");
 const contacts = require("./Routes/contacts");
 const user = require("./Routes/user");
 const sendMessage = require("./Routes/messagesender");
+const Schedules = require("./Controller/schedules");
 
 app.use("/schedules", schedules);
 app.use("/templates", templates);
 app.use("/contacts", contacts);
 app.use("/user", user);
 app.use("/sendmessages", sendMessage);
+
+setInterval(async () => {
+  await Schedules.getsetupandsend();
+}, 1000);
 
 app.listen(port, () => {
   console.log(`Listening on port ${port}`);

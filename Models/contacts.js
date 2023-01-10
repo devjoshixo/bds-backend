@@ -8,11 +8,11 @@ const contactSchema = new Schema({
     required: true,
   },
   mobile: {
-    type: Number,
+    type: String,
     required: true,
   },
   whatsappMobile: {
-    type: Number,
+    type: String,
   },
   email: {
     type: String,

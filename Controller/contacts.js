@@ -6,14 +6,21 @@ const mongooseDynamic = require("mongoose-dynamic-schemas");
 //To display contacts
 module.exports.display = async (req, res) => {
   const contacts = await Contacts.find({});
+  const contact = contacts.slice(0, 600);
+  console.log(contacts.length);
   res.status(200).json(contacts);
 };
 
-//To get messages to sendMessages
-module.exports.getSelectedContacts = async () => {
+module.exports.getAllContacts = async () => {
   const contacts = await Contacts.find({
     templateNo: { $ne: "" },
   });
+  return contacts;
+};
+//To get messages to sendMessages
+module.exports.getSelectedContacts = async (templateNo) => {
+  console.log("getting contacts");
+  const contacts = await Contacts.find({ templateNo: `${templateNo}` });
   return contacts;
 };
 
