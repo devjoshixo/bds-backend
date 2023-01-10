@@ -11,6 +11,19 @@ module.exports.display = async (req, res) => {
   res.status(200).json(contacts);
 };
 
+module.exports.displayQuery = async (req, res) => {
+  try {
+    const required = req.query.required;
+    console.log(req.query.required);
+    const contacts = await Contacts.find().limit(required);
+    res.send(contacts);
+  } catch (e) {
+    res
+      .status(404)
+      .json({ errorMessage: "Error occured while finding contact" });
+  }
+};
+
 module.exports.getAllContacts = async () => {
   const contacts = await Contacts.find({
     templateNo: { $ne: "" },
