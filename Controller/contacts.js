@@ -8,6 +8,7 @@ module.exports.display = async (req, res) => {
   try {
     const { startreq, endreq } = req.query;
     const contacts = await Contacts.find().skip(startreq).limit(endreq);
+    console.log(contacts.length);
     res.send(contacts);
   } catch (e) {
     res
