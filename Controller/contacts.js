@@ -5,17 +5,9 @@ const mongooseDynamic = require("mongoose-dynamic-schemas");
 
 //To display contacts
 module.exports.display = async (req, res) => {
-  const contacts = await Contacts.find({});
-  const contact = contacts.slice(0, 600);
-  console.log(contacts.length);
-  res.status(200).json(contacts);
-};
-
-module.exports.displayQuery = async (req, res) => {
   try {
-    const required = req.query.required;
-    console.log(req.query.required);
-    const contacts = await Contacts.find().limit(required);
+    const { startreq, endreq } = req.query;
+    const contacts = await Contacts.find().skip(startreq).limit(endreq);
     res.send(contacts);
   } catch (e) {
     res
