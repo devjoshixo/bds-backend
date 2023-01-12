@@ -8,7 +8,6 @@ module.exports.display = async (req, res) => {
   try {
     const { startreq, endreq } = req.query;
     const contacts = await Contacts.find().skip(startreq).limit(endreq);
-    console.log(contacts.length);
     res.send(contacts);
   } catch (e) {
     res
@@ -23,6 +22,7 @@ module.exports.getAllContacts = async () => {
   });
   return contacts;
 };
+
 //To get messages to sendMessages
 module.exports.getSelectedContacts = async (templateNo) => {
   console.log("getting contacts");

@@ -2,8 +2,6 @@ const request = require("request");
 const Contacts = require("../Controller/contacts");
 const Contact = require("../Models/contacts");
 const Templates = require("../Controller/templates");
-const http = require("http");
-const { response } = require("express");
 
 module.exports.sendScheduledMessages = async (templateNo) => {
   const contacts = await Contacts.getSelectedContacts(`${templateNo}`);
@@ -11,7 +9,7 @@ module.exports.sendScheduledMessages = async (templateNo) => {
 
   for (let i = 0; i < contacts.length; i++) {
     let msg = await evalBody(selectedTemplate["templatesBody"], contacts[i]);
-    await sendWhatsapp1(
+    await sendWhatsapp(
       contacts[i]["mobile"],
       msg,
       selectedTemplate["Attachment"],
@@ -29,38 +27,109 @@ module.exports.sendMessage = async (req, res) => {
     const selectedTemplate = await Templates.getSelectedTemplate(
       contacts[i]["templateNo"]
     );
-    let msg = await evalBody(selectedTemplate["templatesBody"], contacts[i]);
-    await sendWhatsapp1(
-      `${contacts[i]["mobile"]}`,
-      msg,
-      selectedTemplate["Attachment"],
-      contacts[i]["_id"]
-    );
+
+    if (selectedTemplate["ButtonOption"]) {
+      var msg = {
+        title: await evalBody(selectedTemplate["Header"], contacts[i]),
+        body: await evalBody(selectedTemplate["templatesBody"], contacts[i]),
+        footer: await evalBody(selectedTemplate["Footer"], contacts[i]),
+        templateButtons: selectedTemplate["Buttons"]["button"].map((btn) => {
+          if (btn.text) {
+            btn.text = evalBody(btn.text, contacts[i]);
+          }
+          return btn;
+        }),
+      };
+
+      await sendWhatsappbutton(
+        `${contacts[i]["mobile"]}`,
+        msg,
+        selectedTemplate["Attachment"],
+        contacts[i]["_id"]
+      );
+    } else {
+      var msg = await evalBody(selectedTemplate["templatesBody"], contacts[i]);
+
+      await sendWhatsapp(
+        `${contacts[i]["mobile"]}`,
+        // JSON.stringify(msg),
+        msg,
+        selectedTemplate["Attachment"],
+        selectedTemplate["SendType"],
+        contacts[i]["_id"]
+      );
+    }
   }
   let endTime = new Date();
   let elapsed = endTime - startTime;
   res.send(`${elapsed / 1000}`);
 };
 
-const sendWhatsapp1 = async (phone, msg, Attachment, id) => {
+//to send buttons
+const sendWhatsappbutton = async (phone, msg, Attachment, id) => {
+  var messageBody = {
+    username: "gauravdembla",
+    password: "GDShree260183",
+    receiverMobileNo: 9870495565,
+    recipientIds: [""],
+    message: [""],
+    templateButtons: [msg],
+    filePathUrl: [Attachment],
+  };
+  console.log(messageBody);
+  console.log(messageBody["templateButtons"]);
   var options = {
     method: "POST",
-    url: "https://app.messageautosender.com/api/v1/message/create/",
+    url: "https://app.messageautosender.com/api/v1/message/create",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({
-      username: "Gauravdembla26",
-      password: "Shree1983",
-      receiverMobileNo: phone,
-      message: [msg],
-    }),
+    body: JSON.stringify(messageBody),
   };
-  await request(options, async (error, response) => {
+
+  request(options, function (error, response) {
     if (error) {
       throw new Error(error);
+    } else {
+      console.log(response.body);
+      statusSaver(JSON.parse(response.body), id);
     }
-    await statusSaver(JSON.parse(response.body), id);
+  });
+  return;
+};
+
+//to send without buttons
+const sendWhatsapp = async (phone, msg, Attachment, temtype, id) => {
+  var messageBody = {
+    username: "Gauravdembla26",
+    password: "Shree1983",
+    receiverMobileNo: phone,
+    recipientIds: [""],
+    message: [msg],
+    filePathUrl: [Attachment],
+  };
+  if (temtype == "Caption") {
+    messageBody.caption = [msg];
+  } else {
+    messageBody.message = [msg];
+  }
+
+  var options = {
+    method: "POST",
+    url: "https://app.messageautosender.com/api/v1/message/create",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(messageBody),
+  };
+
+  request(options, function (error, response) {
+    if (error) {
+      throw new Error(error);
+    } else {
+      console.log(response.body);
+      statusSaver(JSON.parse(response.body), id);
+    }
   });
   return;
 };
@@ -81,7 +150,7 @@ const statusSaver = async (status, id) => {
 const evalBody = (body, vars) => {
   const keys = Object.keys(vars.toJSON());
   for (let i = 0; i < keys.length; i++) {
-    body = body.replaceAll("{{" + keys[i] + "}}", vars[keys[i]]);
+    body = body.replaceAll("<<" + keys[i] + ">>", vars[keys[i]]);
   }
   return body;
 };
