@@ -42,19 +42,20 @@ module.exports.sendMessage = async (req, res) => {
   res.send(`${elapsed / 1000}`);
 };
 
-const sendWhatsapp1 = async (phone, msg, Attachment, id) => {
+module.exports.sendWhatsapp1 = async (req, res) => {
+  const messageBody = {
+    username: "Gauravdembla26",
+    password: "Shree1983",
+    receiverMobileNo: "9871324442",
+    message: ["Hello"],
+  };
+  messageBody = JSON.stringify(messageBody);
+  var URL =
+    "https://app.messageautosender.com/api/v1/message/create?username=Gauravdembla26&password=Shree1983";
   var options = {
-    method: "POST",
-    url: "https://app.messageautosender.com/api/v1/message/create/",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      username: "Gauravdembla26",
-      password: "Shree1983",
-      receiverMobileNo: phone,
-      message: [msg],
-    }),
+    method: "post",
+    contentType: "application/json",
+    payload: msg,
   };
   await request(options, async (error, response) => {
     if (error) {
