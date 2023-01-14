@@ -41,6 +41,7 @@ module.exports.sendMessage = async (req, res) => {
         }),
       };
 
+      //To send message with buttons
       await sendWhatsappbutton(
         `${contacts[i]["mobile"]}`,
         msg,
@@ -50,6 +51,7 @@ module.exports.sendMessage = async (req, res) => {
     } else {
       var msg = await evalBody(selectedTemplate["templatesBody"], contacts[i]);
 
+      //To send only message
       await sendWhatsapp(
         `${contacts[i]["mobile"]}`,
         // JSON.stringify(msg),
@@ -65,7 +67,7 @@ module.exports.sendMessage = async (req, res) => {
   res.send(`${elapsed / 1000}`);
 };
 
-<<<<<<< HEAD
+//
 //to send buttons
 const sendWhatsappbutton = async (phone, msg, Attachment, id) => {
   var messageBody = {
@@ -80,27 +82,11 @@ const sendWhatsappbutton = async (phone, msg, Attachment, id) => {
 
   var options = {
     method: "POST",
-    url: "https://app.messageautosender.com/api/v1/message/create",
+    url: "https://app.messageautosender.com/api/v1/message/create/",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(messageBody),
-=======
-module.exports.sendWhatsapp1 = async (req, res) => {
-  const messageBody = {
-    username: "Gauravdembla26",
-    password: "Shree1983",
-    receiverMobileNo: "9871324442",
-    message: ["Hello"],
-  };
-  messageBody = JSON.stringify(messageBody);
-  var URL =
-    "https://app.messageautosender.com/api/v1/message/create?username=Gauravdembla26&password=Shree1983";
-  var options = {
-    method: "post",
-    contentType: "application/json",
-    payload: msg,
->>>>>>> 89e46ae4676d23c61e72b3c701052477e3533f6b
   };
 
   request(options, function (error, response) {
@@ -111,9 +97,9 @@ module.exports.sendWhatsapp1 = async (req, res) => {
       statusSaver(JSON.parse(response.body), id);
     }
   });
-  return;
 };
 
+//
 //to send without buttons
 const sendWhatsapp = async (phone, msg, Attachment, temtype, id) => {
   var messageBody = {
@@ -150,6 +136,7 @@ const sendWhatsapp = async (phone, msg, Attachment, temtype, id) => {
   return;
 };
 
+//
 //To save status
 const statusSaver = async (status, id) => {
   var userID = id.toString();
@@ -163,6 +150,8 @@ const statusSaver = async (status, id) => {
     .catch((e) => console.log(e));
 };
 
+//
+//To switch body details with contact details
 const evalBody = (body, vars) => {
   const keys = Object.keys(vars.toJSON());
   for (let i = 0; i < keys.length; i++) {
