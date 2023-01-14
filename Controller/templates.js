@@ -1,4 +1,3 @@
-const Tempelates = require("../Models/templates");
 const Templates = require("../Models/templates");
 
 module.exports.display = async (req, res) => {
@@ -7,6 +6,6 @@ module.exports.display = async (req, res) => {
 };
 
 module.exports.getSelectedTemplate = async (templateNo) => {
-  const selectedTemplate = await Tempelates.find({ templateNo: 2 });
+  const selectedTemplate = await Templates.find({ templateNo: 2 });
   return selectedTemplate[0];
 };

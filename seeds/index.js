@@ -19,45 +19,52 @@ mongoose
   });
 
 const rootSchedules = async () => {
-  var time = 6;
   await Schedules.deleteMany({});
-  for (let i = 0; i < 5; i++) {
-    let newSchedule = new Schedules({
-      date: new Date(Date.parse(`2023-01-07 18:0${time + i}:00`)),
-      templateNo: "2",
-      active: true,
-      entry: new Date(),
-      scheduledBy: "djoshi911@gmail.com",
-    });
-    await newSchedule.save();
-  }
+
+  let newSchedule = new Schedules({
+    date: new Date(Date.parse(`2023-01-12 12:23:00`)),
+    templateNo: "2",
+    active: true,
+    entry: new Date(),
+    scheduledBy: "djoshi911@gmail.com",
+  });
+  await newSchedule.save();
 };
 
 const rootContacts = async () => {
-  console.log(contactSeeds.length + contactinfo.length);
   await Contacts.deleteMany({});
-  for (let contactSeed of contactinfo.slice(0, 600)) {
-    let newContact = new Contacts({
-      name: contactSeed["name"],
-      mobile: contactSeed["mobile"],
-      whatsappMobile: contactSeed["mobile"],
-      email: contactSeed["email"],
-      templateNo: "2",
-      SentStatus: "",
-      SentReport: "",
-    });
-    await newContact.save();
-  }
   let newContact = new Contacts({
     name: "Dev",
     mobile: 9910513597,
     whatsappMobile: 9910513597,
     email: "3476testdata@gmail.com",
     templateNo: "2",
+    ScheduleTag: "Testing",
     SentStatus: "",
     SentReport: "",
   });
   await newContact.save();
+  var numb = 0;
+  var num = 1;
+  for (let contactSeed of contactinfo.slice(0, 300)) {
+    if (numb == 100) {
+      num = 2;
+    } else {
+      numb++;
+    }
+    let newContact = new Contacts({
+      name: contactSeed["name"],
+      mobile: contactSeed["mobile"],
+      whatsappMobile: contactSeed["mobile"],
+      email: contactSeed["email"],
+      templateNo: "2",
+      ScheduleTag: `Testing${num}`,
+      SentStatus: "",
+      SentReport: "",
+    });
+
+    await newContact.save();
+  }
 };
 
 const rootTemplates = async () => {
@@ -72,9 +79,9 @@ rootContacts().then(() => {
 });
 
 // rootSchedules().then(() => {
-//   mongoose.connection.close();
+// mongoose.connection.close();
 // });
 
 // rootTemplates().then(() => {
-//   mongoose.connection.close();
+// mongoose.connection.close();
 // });
