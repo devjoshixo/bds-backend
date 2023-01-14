@@ -67,6 +67,7 @@ module.exports.deleteContact = async (req, res) => {
   for (contact of contacts) {
     await Contacts.findByIdAndDelete(contact);
   }
+
   res.status(200).json("Successfully deleted");
 };
 

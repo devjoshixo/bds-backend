@@ -65,6 +65,22 @@ module.exports.sendMessage = async (req, res) => {
   res.send(`${elapsed / 1000}`);
 };
 
+<<<<<<< HEAD
+module.exports.sendWhatsapp1 = async (req, res) => {
+  const messageBody = {
+    username: "Gauravdembla26",
+    password: "Shree1983",
+    receiverMobileNo: "9871324442",
+    message: ["Hello"],
+  };
+  messageBody = JSON.stringify(messageBody);
+  var URL =
+    "https://app.messageautosender.com/api/v1/message/create?username=Gauravdembla26&password=Shree1983";
+  var options = {
+    method: "post",
+    contentType: "application/json",
+    payload: msg,
+=======
 //to send buttons
 const sendWhatsappbutton = async (phone, msg, Attachment, id) => {
   var messageBody = {
@@ -83,12 +99,44 @@ const sendWhatsappbutton = async (phone, msg, Attachment, id) => {
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({
-      username: "Gauravdembla26",
-      password: "Shree1983",
-      receiverMobileNo: phone,
-      message: [msg],
-    }),
+    body: JSON.stringify(messageBody),
+>>>>>>>>> Temporary merge branch 2
+  };
+
+  request(options, function (error, response) {
+    if (error) {
+      throw new Error(error);
+    } else {
+      console.log(response.body);
+      statusSaver(JSON.parse(response.body), id);
+    }
+  });
+  return;
+};
+
+//to send without buttons
+const sendWhatsapp = async (phone, msg, Attachment, temtype, id) => {
+  var messageBody = {
+    username: "Gauravdembla26",
+    password: "Shree1983",
+    receiverMobileNo: phone,
+    recipientIds: [""],
+    message: [msg],
+    filePathUrl: [Attachment],
+  };
+  if (temtype == "Caption") {
+    messageBody.caption = [msg];
+  } else {
+    messageBody.message = [msg];
+  }
+
+  var options = {
+    method: "POST",
+    url: "https://app.messageautosender.com/api/v1/message/create",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(messageBody),
   };
 
   request(options, function (error, response) {
