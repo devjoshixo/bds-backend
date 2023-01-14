@@ -8,6 +8,7 @@ module.exports.display = async (req, res) => {
   try {
     const { startreq, endreq } = req.query;
     const contacts = await Contacts.find().skip(startreq).limit(endreq);
+    console.log(contacts.length);
     res.send(contacts);
   } catch (e) {
     res
@@ -22,6 +23,7 @@ module.exports.getAllContacts = async () => {
   });
   return contacts;
 };
+
 //To get messages to sendMessages
 module.exports.getSelectedContacts = async (templateNo) => {
   console.log("getting contacts");
@@ -61,15 +63,12 @@ module.exports.editContact = async (req, res) => {
 
 //To delete Contact
 module.exports.deleteContact = async (req, res) => {
-  try {
-    const { id } = await req.params;
-    const deleteContact = await Contacts.findByIdAndDelete(id);
-    res.status(204).json(deleteContact);
-  } catch (e) {
-    res
-      .status(404)
-      .json({ errorMessage: "Error occured while deleting contact" });
+  const contacts = await req.body;
+  for (contact of contacts) {
+    await Contacts.findByIdAndDelete(contact);
   }
+
+  res.status(200).json("Successfully deleted");
 };
 
 //Deleting all the contacts

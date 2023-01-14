@@ -18,6 +18,9 @@ const contactSchema = new Schema({
     type: String,
     required: true,
   },
+  ScheduleTag: {
+    type: String,
+  },
   templateNo: {
     type: String,
   },
