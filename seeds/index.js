@@ -46,7 +46,7 @@ const rootContacts = async () => {
   await newContact.save();
   var numb = 0;
   var num = 1;
-  for (let contactSeed of contactinfo.slice(0, 5000)) {
+  for (let contactSeed of contactinfo) {
     if (numb == 100) {
       num = 2;
     } else {

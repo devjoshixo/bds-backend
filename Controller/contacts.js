@@ -69,18 +69,12 @@ module.exports.deleteContact = async (req, res) => {
   res.status(200).json("Successfully deleted");
 };
 
-//Deleting all the contacts
-module.exports.deleteAllContacts = async (req, res) => {
-  try {
-    await Contacts.deleteMany({});
-    res.status(204).json({ successMessage: "All contacts deleted" });
-  } catch (e) {
-    res
-      .status(404)
-      .json({ errorMessage: "Error occured while deleting contacts" });
-  }
+module.exports.getCustomFields = async (req, res) => {
+  const customfields = await CustomFields.find({});
+  res.status(200).json(customfields);
 };
 
+//
 //Adding a custom field to contacts
 module.exports.addCustomField = async (req, res) => {
   try {
