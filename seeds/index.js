@@ -39,20 +39,30 @@ const rootContacts = async () => {
     whatsappMobile: 9910513597,
     email: "3476testdata@gmail.com",
     templateNo: "2",
+    ScheduleTag: "Testing",
     SentStatus: "",
     SentReport: "",
   });
   await newContact.save();
-  for (let contactSeed of contactinfo) {
+  var numb = 0;
+  var num = 1;
+  for (let contactSeed of contactinfo.slice(0, 300)) {
+    if (numb == 100) {
+      num = 2;
+    } else {
+      numb++;
+    }
     let newContact = new Contacts({
       name: contactSeed["name"],
       mobile: contactSeed["mobile"],
       whatsappMobile: contactSeed["mobile"],
       email: contactSeed["email"],
-      templateNo: "",
+      templateNo: "2",
+      ScheduleTag: `Testing${num}`,
       SentStatus: "",
       SentReport: "",
     });
+
     await newContact.save();
   }
 };

@@ -68,16 +68,15 @@ module.exports.sendMessage = async (req, res) => {
 //to send buttons
 const sendWhatsappbutton = async (phone, msg, Attachment, id) => {
   var messageBody = {
-    username: "gauravdembla",
-    password: "GDShree260183",
-    receiverMobileNo: 9870495565,
+    username: "Gauravdembla26",
+    password: "Shree1983",
+    receiverMobileNo: phone,
     recipientIds: [""],
-    message: [""],
+    message: [],
     templateButtons: [msg],
     filePathUrl: [Attachment],
   };
-  console.log(messageBody);
-  console.log(messageBody["templateButtons"]);
+
   var options = {
     method: "POST",
     url: "https://app.messageautosender.com/api/v1/message/create",
@@ -137,7 +136,7 @@ const sendWhatsapp = async (phone, msg, Attachment, temtype, id) => {
 //To save status
 const statusSaver = async (status, id) => {
   var userID = id.toString();
-  var SentStatus = status.message;
+  var SentStatus = status.message || status.status + " " + status.error;
   var SentReport = "Sent on " + new Date();
   await Contact.findOne({
     _id: userID,
