@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const Contacts = require("../Models/contacts");
 const Templates = require("../Models/templates");
+const CustomFields = require("../Models/customfield");
 const templateSeeds = require("./templateSeed");
 const contactSeeds = require("./contactSeed");
 const contactinfo = require("./contacts");
@@ -74,9 +75,42 @@ const rootTemplates = async () => {
   }
 };
 
-rootContacts().then(() => {
+const rootCustom = async () => {
+  const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+  var date = new Date();
+  var date =
+    date.getDate() + " " + months[date.getMonth()] + " " + date.getFullYear();
+  for (let i = 1; i <= 100; i++) {
+    const newCustomField = new CustomFields({
+      title: "Dev" + i,
+      description: "Schedule Tag",
+      type: "Text",
+      createdOn: date,
+    });
+    await newCustomField.save();
+  }
+};
+
+rootCustom().then(() => {
   mongoose.connection.close();
 });
+
+// rootContacts().then(() => {
+//   mongoose.connection.close();
+// });
 
 // rootSchedules().then(() => {
 // mongoose.connection.close();
