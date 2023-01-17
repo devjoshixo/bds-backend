@@ -118,16 +118,6 @@ module.exports.addCustomField = async (req, res) => {
 };
 
 //
-//To update contact schema
-const updateContacts = async (title, type) => {
-  try {
-    return "Success";
-  } catch (e) {
-    return e;
-  }
-};
-
-//
 //To edit custom fieldx
 module.exports.editCustomField = async (req, res) => {
   try {
