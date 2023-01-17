@@ -167,7 +167,7 @@ module.exports.deleteCustomField = async (req, res) => {
     res.status(204).json(deleteCustomField);
   } catch (e) {
     res
-      .status(400)
+      .status(200)
       .json({ errorMessage: "Error occured while deleting custom field" });
   }
 };
