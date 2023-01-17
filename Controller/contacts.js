@@ -3,6 +3,7 @@ const { aggregate } = require("../Models/customfield");
 const CustomFields = require("../Models/customfield");
 const mongooseDynamic = require("mongoose-dynamic-schemas");
 
+//
 //To display contacts
 module.exports.display = async (req, res) => {
   try {
@@ -17,6 +18,8 @@ module.exports.display = async (req, res) => {
   }
 };
 
+//
+//Get all contacts
 module.exports.getAllContacts = async () => {
   const contacts = await Contacts.find({
     templateNo: { $ne: "" },
@@ -24,6 +27,7 @@ module.exports.getAllContacts = async () => {
   return contacts;
 };
 
+//
 //To get messages to sendMessages
 module.exports.getSelectedContacts = async (templateNo) => {
   console.log("getting contacts");
@@ -31,6 +35,7 @@ module.exports.getSelectedContacts = async (templateNo) => {
   return contacts;
 };
 
+//
 //To add a Contact
 module.exports.addContact = async (req, res) => {
   try {
@@ -45,6 +50,7 @@ module.exports.addContact = async (req, res) => {
   }
 };
 
+//
 //To edit Contact
 module.exports.editContact = async (req, res) => {
   try {
@@ -61,6 +67,7 @@ module.exports.editContact = async (req, res) => {
   }
 };
 
+//
 //To delete Contact
 module.exports.deleteContact = async (req, res) => {
   const contacts = await req.body;
@@ -69,11 +76,15 @@ module.exports.deleteContact = async (req, res) => {
   res.status(200).json("Successfully deleted");
 };
 
+//
+//Get all custom field details
 module.exports.getCustomFields = async (req, res) => {
   const customfields = await CustomFields.find({});
   res.status(200).json(customfields);
 };
 
+//
+//To get custom field title
 module.exports.getCustomFieldsDetail = async (req, res) => {
   const customfields = await CustomFields.find({}).select("title");
   const customFields = customfields.map((fields) => {
@@ -81,30 +92,59 @@ module.exports.getCustomFieldsDetail = async (req, res) => {
   });
   res.send(customFields);
 };
+
 //
 //Adding a custom field to contacts
 module.exports.addCustomField = async (req, res) => {
-  try {
-    const { title, description, type } = req.body;
-    const newCustomField = new CustomFields({
-      title,
-      description,
-      type,
-    });
-    await newCustomField.save();
+  const { title, description, type } = await req.body;
+  const flag = await req.query.flag;
+  if (1 == parseInt(flag)) {
     if (type == "Text" || type == "Select") var customtype = "String";
     if (type == "MultiSelect") var customtype = "Array";
     await mongooseDynamic.addSchemaField(Contacts, title, {
       type: customtype,
       default: null,
     });
+    res.sendStatus(200);
+  } else {
+    const newCustomField = new CustomFields({
+      title,
+      description,
+      type,
+    });
+    await newCustomField.save();
     res.status(200).json(newCustomField);
-  } catch (e) {
-    console.log(e);
-    res.status(409).json({ errorMessage: "Try again after some time" });
   }
 };
 
+//
+//To update contact schema
+const updateContacts = async (title, type) => {
+  try {
+    return "Success";
+  } catch (e) {
+    return e;
+  }
+};
+
+//
+//To edit custom fieldx
+module.exports.editCustomField = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const contactEdit = await Contacts.findByIdAndUpdate(id, {
+      ...req.body,
+    });
+    await contactEdit.save();
+    res.status(204).json(contactEdit);
+  } catch (e) {
+    res
+      .status(404)
+      .json({ errorMessage: "Error occured while editing contact" });
+  }
+};
+
+//
 //Deleting a custom field from contacts
 module.exports.deleteCustomField = async (req, res) => {
   try {
