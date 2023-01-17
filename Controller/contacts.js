@@ -158,12 +158,13 @@ module.exports.editCustomField = async (req, res) => {
 module.exports.deleteCustomField = async (req, res) => {
   try {
     const id = await req.body.id;
-    const customField = await CustomFields.findOne({ _id: id.toString() });
+    const title = await req.body.title;
+    const customField = await CustomFields.findOneAndRemove({ _id: id });
     const deleteCustomField = await mongooseDynamic.removeSchemaField(
       Contacts,
-      customField.title
+      title
     );
-    return res.status(204).json(deleteCustomField);
+    res.status(204).json(deleteCustomField);
   } catch (e) {
     res
       .status(400)
