@@ -139,12 +139,23 @@ module.exports.editCustomField = async (req, res) => {
 module.exports.deleteCustomField = async (req, res) => {
   try {
     const { id } = await req.params;
-    const deleteCustomField = await CustomFields.findByIdAndDelete(id);
-    await mongooseDynamic.removeSchemaField(Contacts, deleteCustomField.title);
+    const deleteCustomField = await mongooseDynamic.removeSchemaField(
+      Contacts,
+      deleteCustomField.title
+    );
     return res.status(204).json(deleteCustomField);
   } catch (e) {
     res
       .status(400)
       .json({ errorMessage: "Error occured while deleting custom field" });
   }
+};
+
+module.exports.deleteAllcustom = async (req, res) => {
+  const customfields = await CustomFields.find({});
+  customfields.map(async (deleteCustomField) => {
+    await mongooseDynamic.removeSchemaField(Contacts, deleteCustomField.title);
+  });
+  await CustomFields.deleteMany({});
+  res.send("Deleted All");
 };

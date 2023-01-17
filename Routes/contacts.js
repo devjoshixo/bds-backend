@@ -10,7 +10,8 @@ router.route("/delete").delete(contacts.deleteContact);
 router.route("/customfield").get(contacts.getCustomFieldsDetail);
 router.route("/customfield/all").get(contacts.getCustomFields);
 router.route("/customfield/new").post(contacts.addCustomField);
-router.route("customfield/edit").put(contacts.editCustomField);
+router.route("/customfield/edit").put(contacts.editCustomField);
 router.route("/customfield/delete/:id").delete(contacts.deleteCustomField);
+router.route("/customfield/deleteall").delete(contacts.deleteAllcustom);
 
 module.exports = router;
