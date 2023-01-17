@@ -98,7 +98,7 @@ module.exports.getCustomFieldsDetail = async (req, res) => {
 module.exports.addCustomField = async (req, res) => {
   const { title, description, type } = await req.body;
   const flag = await req.query.flag;
-  if (1 == parseInt(flag)) {
+  if (parseInt(flag) == 1) {
     if (type == "Text" || type == "Select") var customtype = "String";
     if (type == "MultiSelect") var customtype = "Array";
     await mongooseDynamic.addSchemaField(Contacts, title, {
@@ -107,13 +107,32 @@ module.exports.addCustomField = async (req, res) => {
     });
     res.sendStatus(200);
   } else {
+    const months = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ];
+    var date = new Date();
+    var date =
+      date.getDate() + " " + months[date.getMonth()] + " " + date.getFullYear();
+
     const newCustomField = new CustomFields({
       title,
       description,
       type,
+      createdOn: date,
     });
     await newCustomField.save();
-    res.status(200).json(newCustomField);
+    res.sendStatus(200);
   }
 };
 
@@ -138,10 +157,11 @@ module.exports.editCustomField = async (req, res) => {
 //Deleting a custom field from contacts
 module.exports.deleteCustomField = async (req, res) => {
   try {
-    const { id } = await req.params;
+    const id = await req.body.id;
+    const customField = await CustomFields.findOne({ _id: id.toString() });
     const deleteCustomField = await mongooseDynamic.removeSchemaField(
       Contacts,
-      deleteCustomField.title
+      customField.title
     );
     return res.status(204).json(deleteCustomField);
   } catch (e) {

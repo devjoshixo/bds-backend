@@ -15,6 +15,10 @@ const customFieldSchema = new Schema({
     enum: ["Text", "Date", "Select", "MultiSelect", "Number"],
     required: true,
   },
+  createdOn: {
+    type: String,
+    required: true,
+  },
 });
 
 const CustomFields = mongoose.model("customFields", customFieldSchema);
