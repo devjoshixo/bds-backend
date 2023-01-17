@@ -74,6 +74,13 @@ module.exports.getCustomFields = async (req, res) => {
   res.status(200).json(customfields);
 };
 
+module.exports.getCustomFieldsDetail = async (req, res) => {
+  const customfields = await CustomFields.find({}).select("title");
+  const customFields = customfields.map((fields) => {
+    return fields.title;
+  });
+  res.send(customFields);
+};
 //
 //Adding a custom field to contacts
 module.exports.addCustomField = async (req, res) => {
