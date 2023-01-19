@@ -59,9 +59,9 @@ module.exports.editContact = async (req, res) => {
     const contactEdit = await Contacts.findByIdAndUpdate(id, {
       ...req.body,
     });
-    await contactEdit.save();
-    res.status(204).json(contactEdit);
+    res.status(204).json("Done");
   } catch (e) {
+    console.log(e);
     res
       .status(404)
       .json({ errorMessage: "Error occured while editing contact" });
