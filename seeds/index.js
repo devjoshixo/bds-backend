@@ -34,20 +34,20 @@ const rootSchedules = async () => {
 
 const rootContacts = async () => {
   await Contacts.deleteMany({});
-  let newContact = new Contacts({
-    name: "Dev",
-    mobile: 9910513597,
-    whatsappMobile: 9910513597,
-    email: "3476testdata@gmail.com",
-    templateNo: "2",
-    ScheduleTag: "Testing",
-    SentStatus: "",
-    SentReport: "",
-  });
-  await newContact.save();
+  // let newContact = new Contacts({
+  //   name: "Dev",
+  //   mobile: 9910513597,
+  //   whatsappMobile: 9910513597,
+  //   email: "3476testdata@gmail.com",
+  //   templateNo: "2",
+  //   ScheduleTag: "Testing",
+  //   SentStatus: "",
+  //   SentReport: "",
+  // });
+  // await newContact.save();
   var numb = 0;
   var num = 1;
-  for (let contactSeed of contactinfo.slice(0, 1000)) {
+  for (let contactSeed of contactinfo.slice(0, 10)) {
     if (numb == 100) {
       num = 2;
     } else {
@@ -62,9 +62,11 @@ const rootContacts = async () => {
       ScheduleTag: `Testing${num}`,
       SentStatus: "",
       SentReport: "",
+      CustomField: {},
     });
 
     await newContact.save();
+    await Contacts.deleteMany({});
   }
 };
 
@@ -76,6 +78,7 @@ const rootTemplates = async () => {
 };
 
 const rootCustom = async () => {
+  await CustomFields.deleteMany({});
   const months = [
     "January",
     "February",
@@ -104,13 +107,13 @@ const rootCustom = async () => {
   }
 };
 
-rootCustom().then(() => {
-  mongoose.connection.close();
-});
-
-// rootContacts().then(() => {
+// rootCustom().then(() => {
 //   mongoose.connection.close();
 // });
+
+rootContacts().then(() => {
+  mongoose.connection.close();
+});
 
 // rootSchedules().then(() => {
 // mongoose.connection.close();

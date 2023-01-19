@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const mongooseUniqueValidation = require("mongoose-unique-validator");
-
 const contactSchema = new Schema({
   name: {
     type: String,
@@ -20,15 +19,22 @@ const contactSchema = new Schema({
   },
   ScheduleTag: {
     type: String,
+    default: "",
   },
   templateNo: {
     type: String,
   },
   SentStatus: {
     type: String,
+    default: "",
   },
   SentReport: {
     type: String,
+    default: "",
+  },
+  CustomFields: {
+    type: Object,
+    default: null,
   },
 });
 contactSchema.plugin(mongooseUniqueValidation);

@@ -2,6 +2,7 @@ const Contacts = require("../Models/contacts");
 const { aggregate } = require("../Models/customfield");
 const CustomFields = require("../Models/customfield");
 const mongooseDynamic = require("mongoose-dynamic-schemas");
+const { Schema } = require("mongoose");
 
 //
 //To display contacts
@@ -43,7 +44,7 @@ module.exports.addContact = async (req, res) => {
       ...req.body,
     });
     await newContact.save();
-    res.status(200).json(newContact);
+    res.status(200).json("Done");
   } catch (e) {
     console.log(e);
     res.status(409).json({ errorMessage: e });
@@ -70,7 +71,7 @@ module.exports.editContact = async (req, res) => {
 //
 //To delete Contact
 module.exports.deleteContact = async (req, res) => {
-  const contacts = await req.body;
+  const contacts = await req.body.id;
   await Contacts.deleteMany({ _id: { $in: contacts } });
 
   res.status(200).json("Successfully deleted");
@@ -97,43 +98,32 @@ module.exports.getCustomFieldsDetail = async (req, res) => {
 //Adding a custom field to contacts
 module.exports.addCustomField = async (req, res) => {
   const { title, description, type } = await req.body;
-  const flag = await req.query.flag;
-  if (parseInt(flag) == 1) {
-    if (type == "Text" || type == "Select") var customtype = "String";
-    if (type == "MultiSelect") var customtype = "Array";
-    await mongooseDynamic.addSchemaField(Contacts, title, {
-      type: customtype,
-      default: null,
-    });
-    res.sendStatus(200);
-  } else {
-    const months = [
-      "January",
-      "February",
-      "March",
-      "April",
-      "May",
-      "June",
-      "July",
-      "August",
-      "September",
-      "October",
-      "November",
-      "December",
-    ];
-    var date = new Date();
-    var date =
-      date.getDate() + " " + months[date.getMonth()] + " " + date.getFullYear();
+  const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+  var date = new Date();
+  var date =
+    date.getDate() + " " + months[date.getMonth()] + " " + date.getFullYear();
 
-    const newCustomField = new CustomFields({
-      title,
-      description,
-      type,
-      createdOn: date,
-    });
-    await newCustomField.save();
-    res.sendStatus(200);
-  }
+  const newCustomField = new CustomFields({
+    title,
+    description,
+    type,
+    createdOn: date,
+  });
+  await newCustomField.save();
+  res.sendStatus(200);
 };
 
 //
@@ -145,6 +135,7 @@ module.exports.editCustomField = async (req, res) => {
       ...req.body,
     });
     await contactEdit.save();
+
     res.status(204).json(contactEdit);
   } catch (e) {
     res
@@ -159,15 +150,20 @@ module.exports.deleteCustomField = async (req, res) => {
   try {
     const id = await req.body.id;
     const title = await req.body.title;
-    const customField = await CustomFields.findOneAndRemove({ _id: id });
-    const deleteCustomField = await mongooseDynamic.removeSchemaField(
-      Contacts,
-      title
-    );
+    await CustomFields.findOneAndRemove({ _id: id });
+    try {
+      const deleteCustomField = await mongooseDynamic.removeSchemaField(
+        Contacts,
+        title
+      );
+    } catch (e) {
+      console.log(e);
+    }
+
     res.status(204).json(deleteCustomField);
   } catch (e) {
     res
-      .status(200)
+      .status(400)
       .json({ errorMessage: "Error occured while deleting custom field" });
   }
 };
