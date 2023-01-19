@@ -71,8 +71,10 @@ module.exports.editContact = async (req, res) => {
 //
 //To delete Contact
 module.exports.deleteContact = async (req, res) => {
-  const contacts = await req.body.id;
-  await Contacts.deleteMany({ _id: { $in: contacts } });
+  const contacts = await req.body;
+  contacts.map(async (contact) => {
+    await Contacts.findByIdAndRemove(contact);
+  });
 
   res.status(200).json("Successfully deleted");
 };
