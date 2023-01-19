@@ -76,7 +76,10 @@ module.exports.deleteContact = async (req, res) => {
     await Contacts.findByIdAndRemove(contact);
   });
 
-  res.status(200).json("Successfully deleted");
+    res.status(200).json("Successfully deleted");
+  } catch (e) {
+    res.status(409).json({ error: "Not found" });
+  }
 };
 
 //
@@ -99,33 +102,37 @@ module.exports.getCustomFieldsDetail = async (req, res) => {
 //
 //Adding a custom field to contacts
 module.exports.addCustomField = async (req, res) => {
-  const { title, description, type } = await req.body;
-  const months = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
-  var date = new Date();
-  var date =
-    date.getDate() + " " + months[date.getMonth()] + " " + date.getFullYear();
+  try {
+    const { title, description, type } = await req.body;
+    const months = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ];
+    var date = new Date();
+    var date =
+      date.getDate() + " " + months[date.getMonth()] + " " + date.getFullYear();
 
-  const newCustomField = new CustomFields({
-    title,
-    description,
-    type,
-    createdOn: date,
-  });
-  await newCustomField.save();
-  res.sendStatus(200);
+    const newCustomField = new CustomFields({
+      title,
+      description,
+      type,
+      createdOn: date,
+    });
+    await newCustomField.save();
+    res.sendStatus(200);
+  } catch (e) {
+    res.status(409).json({ error: "Already exists" });
+  }
 };
 
 //

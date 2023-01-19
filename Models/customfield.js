@@ -1,11 +1,13 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
+const mongooseUniqueValidation = require("mongoose-unique-validator");
 
 const customFieldSchema = new Schema(
   {
     title: {
       type: String,
       required: true,
+      unique: true,
     },
     description: {
       type: String,
@@ -23,6 +25,7 @@ const customFieldSchema = new Schema(
   },
   { strict: false }
 );
+customFieldSchema.plugin(mongooseUniqueValidation);
 
 const CustomFields = mongoose.model("customFields", customFieldSchema);
 
