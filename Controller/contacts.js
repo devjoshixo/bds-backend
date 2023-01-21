@@ -129,6 +129,17 @@ module.exports.addCustomField = async (req, res) => {
       createdOn: date,
     });
     await newCustomField.save();
+
+    var contacts = await Contacts.find({});
+    contacts = contacts.map((contact) => {
+      custom = contact.CustomFields;
+      custom[title] = "N/A";
+      return contact;
+    });
+
+    await Contacts.deleteMany({});
+    await Contacts.insertMany(contacts);
+
     res.sendStatus(200);
   } catch (e) {
     res.status(409).json({ error: "Already exists" });
