@@ -84,9 +84,9 @@ module.exports.deleteContact = async (req, res) => {
 module.exports.getCustomFields = async (req, res) => {
   try {
     const customfields = await CustomFields.find({});
-    res.sendStatus(200).json(customfields);
+    res.send(customfields);
   } catch (e) {
-    res.send(404).json({ error: e });
+    res.send(e);
   }
 };
 
