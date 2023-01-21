@@ -82,18 +82,20 @@ module.exports.deleteContact = async (req, res) => {
 //
 //Get all custom field details
 module.exports.getCustomFields = async (req, res) => {
-  const customfields = await CustomFields.find({});
-  res.status(200).json(customfields);
+  try {
+    const customfields = await CustomFields.find({});
+    res.sendStatus(200).json(customfields);
+  } catch (e) {
+    res.send(404).json({ error: e });
+  }
 };
 
 //
 //To get custom field title
-module.exports.getCustomFieldsDetail = async (req, res) => {
-  const customfields = await CustomFields.find({}).select("title");
-  const customFields = customfields.map((fields) => {
-    return fields.title;
-  });
-  res.send(customFields);
+module.exports.getCustomFieldsType = async (req, res) => {
+  const title = await req.query.title;
+  const type = await CustomFields.findOne({ title: title });
+  res.send(type["type"]);
 };
 
 //
@@ -133,17 +135,31 @@ module.exports.addCustomField = async (req, res) => {
 };
 
 //
-//To edit custom fieldx
+//To edit custom fields
 module.exports.editCustomField = async (req, res) => {
   try {
-    const { id } = req.params;
-    const contactEdit = await Contacts.findByIdAndUpdate(id, {
-      ...req.body,
+    const { id, newtitle, oldtitle } = req.body;
+    await CustomFields.findByIdAndUpdate(id, {
+      title: newtitle,
     });
-    await contactEdit.save();
+    var contacts = await Contacts.find({});
 
-    res.status(204).json(contactEdit);
+    contacts = contacts.map((contact) => {
+      custom = contact.CustomFields;
+      if (custom[`${oldtitle}`]) {
+        custom[`${newtitle}`] = custom[`${oldtitle}`];
+        delete custom[`${oldtitle}`];
+      } else {
+      }
+      return contact;
+    });
+
+    await Contacts.deleteMany({});
+    await Contacts.insertMany(contacts);
+
+    res.status(204).json({ done: "Done" });
   } catch (e) {
+    console.log(e);
     res
       .status(404)
       .json({ errorMessage: "Error occured while editing contact" });
@@ -157,14 +173,6 @@ module.exports.deleteCustomField = async (req, res) => {
     const id = await req.body.id;
     const title = await req.body.title;
     await CustomFields.findOneAndRemove({ _id: id });
-    try {
-      const deleteCustomField = await mongooseDynamic.removeSchemaField(
-        Contacts,
-        title
-      );
-    } catch (e) {
-      console.log(e);
-    }
 
     res.status(204).json(deleteCustomField);
   } catch (e) {

@@ -47,7 +47,7 @@ const rootContacts = async () => {
   // await newContact.save();
   var numb = 0;
   var num = 1;
-  for (let contactSeed of contactinfo.slice(0, 10)) {
+  for (let contactSeed of contactinfo) {
     if (numb == 100) {
       num = 2;
     } else {
@@ -62,11 +62,16 @@ const rootContacts = async () => {
       ScheduleTag: `Testing${num}`,
       SentStatus: "",
       SentReport: "",
-      CustomField: {},
+      CustomFields: {
+        Testing1: "1",
+        Testing2: "2",
+        Testing3: "3",
+        Testing4: "4",
+      },
     });
 
     await newContact.save();
-    await Contacts.deleteMany({});
+    // await Contacts.deleteMany({});
   }
 };
 
@@ -96,9 +101,9 @@ const rootCustom = async () => {
   var date = new Date();
   var date =
     date.getDate() + " " + months[date.getMonth()] + " " + date.getFullYear();
-  for (let i = 1; i <= 100; i++) {
+  for (let i = 1; i <= 4; i++) {
     const newCustomField = new CustomFields({
-      title: "Dev" + i,
+      title: "Testing" + i,
       description: "Schedule Tag",
       type: "Text",
       createdOn: date,
