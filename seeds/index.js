@@ -53,24 +53,28 @@ const rootContacts = async () => {
     } else {
       numb++;
     }
-    let newContact = new Contacts({
-      name: contactSeed["name"],
-      mobile: contactSeed["mobile"],
-      whatsappMobile: contactSeed["mobile"],
-      email: contactSeed["email"],
-      templateNo: "2",
-      ScheduleTag: `Testing${num}`,
-      SentStatus: "",
-      SentReport: "",
-      CustomFields: {
-        Testing1: "1",
-        Testing2: "2",
-        Testing3: "3",
-        Testing4: "4",
-      },
-    });
+    if (num === 1) {
+      let newContact = new Contacts({
+        name: contactSeed["name"],
+        mobile: contactSeed["mobile"],
+        whatsappMobile: contactSeed["mobile"],
+        email: contactSeed["email"],
+        templateNo: "2",
+        ScheduleTag: `Testing${num}`,
+        SentStatus: "",
+        SentReport: "",
+        CustomFields: {
+          Testing1: "1",
+          Testing2: "2",
+          Testing3: "3",
+          Testing4: "4",
+        },
+      });
 
-    await newContact.save();
+      await newContact.save();
+    } else {
+      break;
+    }
     // await Contacts.deleteMany({});
   }
 };
