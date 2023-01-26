@@ -6,6 +6,7 @@ const templateSeeds = require("./templateSeed");
 const contactSeeds = require("./contactSeed");
 const contactinfo = require("./contacts");
 const Schedules = require("../Models/schedules");
+const { getCustomFields } = require("../Controller/contacts");
 require("dotenv").config();
 
 mongoose
@@ -34,48 +35,25 @@ const rootSchedules = async () => {
 
 const rootContacts = async () => {
   await Contacts.deleteMany({});
-  // let newContact = new Contacts({
-  //   name: "Dev",
-  //   mobile: 9910513597,
-  //   whatsappMobile: 9910513597,
-  //   email: "3476testdata@gmail.com",
-  //   templateNo: "2",
-  //   ScheduleTag: "Testing",
-  //   SentStatus: "",
-  //   SentReport: "",
-  // });
-  // await newContact.save();
-  var numb = 0;
-  var num = 1;
-  for (let contactSeed of contactinfo) {
-    if (numb == 100) {
-      num = 2;
-    } else {
-      numb++;
-    }
-    if (num === 1) {
-      let newContact = new Contacts({
-        name: contactSeed["name"],
-        mobile: contactSeed["mobile"],
-        whatsappMobile: contactSeed["mobile"],
-        email: contactSeed["email"],
-        templateNo: "2",
-        ScheduleTag: `Testing${num}`,
-        SentStatus: "",
-        SentReport: "",
-        CustomFields: {
-          Testing1: "1",
-          Testing2: "2",
-          Testing3: "3",
-          Testing4: "4",
-        },
-      });
+  const Custom = await CustomFields.find({});
+  var customFields = {};
+  for (let custom of Custom) {
+    customFields[custom["title"]] = "N/A";
+  }
+  for (let contactSeed of contactinfo.slice(0, 100)) {
+    let newContact = new Contacts({
+      name: contactSeed["name"],
+      mobile: contactSeed["mobile"],
+      whatsappMobile: contactSeed["mobile"],
+      email: contactSeed["email"],
+      templateNo: "2",
+      ScheduleTag: `Testing1`,
+      SentStatus: "",
+      SentReport: "",
+      CustomFields: customFields,
+    });
 
-      await newContact.save();
-    } else {
-      break;
-    }
-    // await Contacts.deleteMany({});
+    await newContact.save();
   }
 };
 
@@ -105,7 +83,7 @@ const rootCustom = async () => {
   var date = new Date();
   var date =
     date.getDate() + " " + months[date.getMonth()] + " " + date.getFullYear();
-  for (let i = 1; i <= 4; i++) {
+  for (let i = 1; i <= 5; i++) {
     const newCustomField = new CustomFields({
       title: "Testing" + i,
       description: "Schedule Tag",
@@ -117,7 +95,7 @@ const rootCustom = async () => {
 };
 
 // rootCustom().then(() => {
-//   mongoose.connection.close();
+//   // mongoose.connection.close();
 // });
 
 rootContacts().then(() => {
