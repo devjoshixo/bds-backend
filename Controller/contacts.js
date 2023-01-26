@@ -54,7 +54,7 @@ module.exports.addContact = async (req, res) => {
 //To edit Contact
 module.exports.editContact = async (req, res) => {
   try {
-    const { id } = req.params;
+    const id = req.body._id;
     const contactEdit = await Contacts.findByIdAndUpdate(id, {
       ...req.body,
     });
