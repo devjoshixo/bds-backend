@@ -94,9 +94,13 @@ module.exports.getCustomFields = async (req, res) => {
 //
 //To get custom field title
 module.exports.getCustomFieldsType = async (req, res) => {
-  const title = await req.query.title;
-  const type = await CustomFields.findOne({ title: title });
-  res.send(type["type"]);
+  try {
+    const title = await req.query.title;
+    const type = await CustomFields.findOne({ title: title });
+    res.send(type["type"]);
+  } catch (e) {
+    res.send(409);
+  }
 };
 
 //
