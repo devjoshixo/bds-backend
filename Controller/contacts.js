@@ -185,9 +185,17 @@ module.exports.deleteCustomField = async (req, res) => {
     const id = await req.body.id;
     const title = await req.body.title;
     await CustomFields.findOneAndRemove({ _id: id });
+    var contacts = await Contacts.find({});
 
-    res.status(204).json(deleteCustomField);
+    for (let contact of contacts) {
+      delete contact["CustomFields"][title];
+    }
+
+    await Contacts.deleteMany({});
+    await Contacts.insertMany(contacts);
+    res.status(204).json("Done");
   } catch (e) {
+    console.log(e);
     res
       .status(400)
       .json({ errorMessage: "Error occured while deleting custom field" });
